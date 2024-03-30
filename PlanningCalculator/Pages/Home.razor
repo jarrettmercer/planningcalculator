@@ -1,0 +1,74 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, everyone! </h1>
+
+<div class="d-grid gap-2 col-6 mx-auto mt-2">
+    
+
+    <input placeholder="Task name goes here.." @bind="@taskDescription"/>
+
+    <Button class="btn-secondary" @onclick="@(_ => SetPointValue(0.25))"> 0.25 </Button>
+    <Button class="btn-secondary" @onclick="@(_ => SetPointValue(1))"> 1 </Button>
+    <Button class="btn-secondary" @onclick="@(_ => SetPointValue(3))"> 3 </Button>
+
+    <button class="btn-primary" @onclick="AddTaskToList"> Add To List</button>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Task Name</th>
+            <th>Point Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var task in tasks)
+        {
+            <tr>
+                <td>@task.TaskName</td>
+                <td>@task.Point</td>
+            </tr>
+        }
+        <tr>
+            <td>Total:</td>
+            <td>@totalPoints</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+@code
+{
+    private string? taskDescription;
+    private double taskEstimate = 0;
+    private List<EstimatedTask> tasks = new();
+    private double totalPoints = 0;
+
+    private void SetPointValue(double value)
+    {
+        taskEstimate = value;
+    }
+    
+    private void AddTaskToList()
+    {
+        if (!string.IsNullOrEmpty(taskDescription))
+        {
+            tasks.Add(new EstimatedTask() { TaskName = taskDescription, Point = taskEstimate });
+            taskDescription = string.Empty;
+            totalPoints = tasks.Sum(x => x.Point);
+        }
+    }
+    
+    private class EstimatedTask
+    {
+        public string TaskName { get; set; }
+        public double Point { get; set; }
+    }
+}
